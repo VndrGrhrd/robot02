@@ -15,6 +15,7 @@ class InitWio {
         return {
             browserName: 'firefox',
             'moz:firefoxOptions': {
+                args: ['-start-maximized'],
                 prefs: {
                     'browser.download.folderList': 2,
                     //'browser.download.dir': '/caminho/para/sua/pasta/de/downloads',
@@ -29,6 +30,7 @@ class InitWio {
         return {
             browserName: 'chrome',
             'goog:chromeOptions': {
+                args: ['--start-maximized'],
                 prefs: {
                     //'download.default_directory': '/caminho/para/sua/pasta/de/downloads', // Defina o diretório de download
                     'download.prompt_for_download': false, // Desative a solicitação de download

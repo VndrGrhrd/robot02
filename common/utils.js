@@ -242,7 +242,7 @@ class Utils {
         const { res, payload } = await Wreck.get(urlPDF);
         const storageID = '' // await PostDocument.post('print.pdf', payload)
 
-        writeFileSync(filePath, payload)
+        fs.writeFileSync(filePath, payload)
 
         return {
             pdfpath: filePath,
