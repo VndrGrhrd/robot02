@@ -68,13 +68,25 @@ class Utils {
     }
 
     async getTexts(field) {
+        const arrTexts = []
         await this.checkVisibity(field)
-        return await browser.$$(field).getText()
+        const arrElements = await browser.$$(field)
+        for (const element of arrElements) {
+            const text = await element.getText()
+            text && arrTexts.push(text)
+        }
+        return arrTexts.filter(Boolean)
     }
 
     async getHTMLs(field) {
+        const arrHTML = []
         await this.checkVisibity(field)
-        return await browser.$$(field).getHTML()
+        const arrElements = await browser.$$(field)
+        for (const element of arrElements) {
+            const html = await element.getHTML()
+            html && arrHTML.push(html)
+        }
+        return arrHTML.filter(Boolean)
     }
 
     async checkExisting(field) {
