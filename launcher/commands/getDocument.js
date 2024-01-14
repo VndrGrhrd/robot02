@@ -5,12 +5,12 @@ const { pdfToText, addDaysToDate } = require("../../common/utils")
 class GetDocument {
 
     async execute(filesPath, title) {
-        const model = this.model(0, filesPath.storageid)
+        const model = this.model(29, filesPath.storageid)
         const texContent = await pdfToText(filesPath.pdfpath)
         const pdfmatch = this.pdfMatch(texContent)
 
         model.type = title
-        model.protocol = texContent.match(/Nº\sda\scertidão:\s(\d+)/i)[1]
+        model.protocol = texContent.match(/Chave\sde\sautenticação:\s(\d+)/i)[1]
         model.notation = pdfmatch.notation
         model.analisys = pdfmatch.analisys
         return model

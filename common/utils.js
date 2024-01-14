@@ -10,13 +10,8 @@ const TEMP_DIR = path.join(os.tmpdir(), 'adv2crwling')
 
 class Utils {
 
-    get inpCaptcha() { return '[class*="captcha-area"] input' }
-    get captchaImg() { return '[class*="captcha-area"] img' }
-    get captchaError() { return '[class="alert-head"] h2' }
-    get btnSubmit() { return '[type="submit"]*=SOLICITAR' }
     get iframeReCaptcha() { return '[title="reCAPTCHA"]' }
     get inpReCaptchaResponse() { return '[name="g-recaptcha-response"]' }
-    get spinner() { return '[class*="loading-spinner"]' }
 
     pause(time) { return new Promise(resolve => setTimeout(resolve, time)) }
 
@@ -125,34 +120,6 @@ class Utils {
         console.log('Page is: ', isLoading)
         if (isLoading) return await this.isLoagind(field)
     }
-
-    async solverCaptchas() {
-        console.log('\n\nAGUANDANDO RESOLVER O CAPTCHA\n\n')
-        await browser.debug()
-        return
-
-        const reCaptcha = this.solverReCaptcha()
-
-        const filePath = path.join(TEMP_DIR, 'captcha.png')
-        const base64Img = await this.getAttribute(this.inpCaptcha, 'src')
-        fs.writeFileSync(filePath, base64Img, 'base64')
-
-        const taskResponse = adv2libcaptchaBreackes.solverGSA(filePath, '')
-        await this.setFieldValue(this.inpCaptcha, taskResponse)
-        await reCaptcha
-        await this.clickField(this.btnSubmit)
-        await this.pageIsComplete()
-        await this.isLoagind(this.spinner)
-
-        const error = (await this.getTexts(this.captchaError))[0]
-        if (!error) return
-        //const errors = ["captcha incorreto"]
-        // if (errors.find(err => error.toLowerCase().includes(err)))
-        await this.clickField('[class*="alert-button"]')
-        await this.clickField('[aria-label="refresh"]')
-        return await this.solverCaptchas()
-    }
-
     async solverReCaptcha() {
         if (!(await this.checkExisting(this.iframeReCaptcha))) return
 
@@ -162,6 +129,7 @@ class Utils {
 
         const taskResponse = await solverCaptchaBreackers.solveRecaptcha(siteUrl, siteKey)
         await browser.execute(`document.querySelector('${this.inpReCaptchaResponse}').value = "${taskResponse}"`)
+        await browser.execute(`submit()`)
     }
 
     async savePDF(field) {
@@ -231,23 +199,6 @@ class Utils {
         const timestamp = new Date(date).getTime()
         const newTimestamp = timestamp + (Number(daysToAdd) * millisecondsPerDay)
         return new Date(newTimestamp)
-    }
-
-    async getPDF() {
-        const filePath = path.join(TEMP_DIR, 'print.pdf')
-        const protocol = (await Utils.getTexts('.borderOnTop .row:nth-child(3) .col:nth-child(2)'))[0].replace(/[^\d]/gm, '')
-        const validCode = (await Utils.getTexts('.borderOnTop .row:nth-child(4) .col:nth-child(2)'))[0]
-        const urlPDF = `https://apijuris.tjma.jus.br/v1/certidao/pdf?numero=${protocol}&hash=${validCode}`
-
-        const { res, payload } = await Wreck.get(urlPDF);
-        const storageID = '' // await PostDocument.post('print.pdf', payload)
-
-        fs.writeFileSync(filePath, payload)
-
-        return {
-            pdfpath: filePath,
-            storageid: storageID
-        }
     }
 
 }

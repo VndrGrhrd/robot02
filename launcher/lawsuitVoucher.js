@@ -5,7 +5,6 @@ const getDocument = require('./commands/getDocument')
 class LowsuitVoucher {
     async execute(jobData) {
         const params = jobData.params
-        params.cndType = this.findType(jobData.title)
         params.federalDoc = this.findFederalDoc(params)
 
         const result = await IssueVoucher.execute(params)
@@ -13,15 +12,6 @@ class LowsuitVoucher {
         
         if (!voucher || typeof voucher == 'string') return this.unsucessifuly(voucher)
         return this.sucessifuly(voucher)
-    }
-
-    findType(title) {
-        const arrTitle = title.split('-')
-        arrTitle.shift()
-        return {
-            grau: arrTitle[0].match(/\d/g)[0],
-            nature: arrTitle[1].trim()
-        }
     }
 
     findFederalDoc(params) {
