@@ -1,6 +1,6 @@
 {
     "title":"Certidão Negativa - Ministério Público do Estado do Maranhão - TJMA",
-    "uri": "https://www.mpma.mp.br/certidao-negativa",
+    "uri": "https://apps.mpma.mp.br/simp-web/certidao/index.php",
     "params":{
         "nome": "Elisangela Gabriela Gerhard",
         "personType": "CPF",
